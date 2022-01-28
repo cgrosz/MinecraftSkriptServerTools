@@ -1,0 +1,37 @@
+# bot raid protection skript
+
+# bot raid toggle
+command /botwhitelist:
+    permission: minecraft.op
+    trigger:
+        if {Lootcraft.StopTheBots} is not set:
+            set {Lootcraft.StopTheBots} to false
+        if {Lootcraft.StopTheBots} is false:
+            set {Lootcraft.StopTheBots} to true
+            send "&cNow Preventing Bots From Joining!" to player
+        else if {Lootcraft.StopTheBots} is true:
+            set {Lootcraft.StopTheBots} to false
+            send "&aAll Players Can Now Join" to player
+
+# this currently kicks to lobby and bans any player who is not drifter or above
+# lobby chat is not network wide, they can spam there
+# drifters and above will be able to get online and play normally
+on connect:
+    if {Lootcraft.StopTheBots} is true:        
+        if player does not have permission "botraid.IsRealPlayer":
+            kick player
+            make console execute "/tempban %player% 10m 'Come back in 10 minutes - Bot Spam Prevention'"
+
+            #loop {first_join_ips::*}:
+            #    if loop-value is "%{_playerIP}%":
+            #        remove {_playerIP} from {first_join_ips::*}
+
+#on chat:
+#    if {Lootcraft.StopTheBots} is true:
+#        if player does not have permission "botraid.IsRealPlayer":
+#            cancel event
+
+
+# one improvement that can be made: 
+# track all ip's and player names of real Players
+# instead of using drifter+, we can check that list instead

@@ -1,0 +1,20 @@
+command /ticket <text>:
+    aliases: /report
+    trigger:
+        if {ticket.sent.%player%} is true:
+            send "[&aTICKET&f] &aYou can only submit a ticket every 10 minutes."
+
+        if arg-1 is not set:
+            send "Please use this command to submit bug reports or player reports only." to player
+            
+        if {ticket.sent.%player%} is not set:
+            set {ticket.sent.%player%} to false
+        if {ticket.sent.%player%} is false:
+            set {ticket.sent.%player%} to true
+            set {_ticket} to arg-1
+            set {_ticketSender} to player
+            loop all players:
+                if loop-player has permission "lootcraft.ticketviewer":
+                    send "[&aTICKET&f] &aFrom %{_ticketSender}%: &a%{_ticket}%" to loop-player
+            wait 10 minutes
+            set {ticket.sent.%player%} to false

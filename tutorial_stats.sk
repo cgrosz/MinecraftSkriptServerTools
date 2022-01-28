@@ -1,0 +1,14 @@
+on first join:
+    add 1 to {PlayerFirstJoinCounterTotal}
+    set {PlayerCompletedTutorial.%player's uuid%} to false
+
+on command "/closespawn":
+    if {PlayerCompletedTutorial.%player's uuid%} is false:
+        set {PlayerCompletedTutorial.%player's uuid%} to true
+        add 1 to {PlayerCompletedTutorialCounterTotal}
+
+command /tutorialstats:
+    permission: minecraft.op
+    trigger:
+        set {_percentage} to {PlayerCompletedTutorialCounterTotal} / {PlayerFirstJoinCounterTotal}
+        send "[&6&lTUTORIAL&f] Completion Percentage: %{_percentage}%" to player

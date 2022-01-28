@@ -1,0 +1,80 @@
+on join:
+    if player is op:
+        stop
+    
+    if player has permission "games.reward.lk1":
+        if player has enough space for 1 diamond shovel:
+            make console execute "/crates key %player% zombie 1"
+            send "&e&l> &eYou've redeemed Minigame Points for a Zombie Loot Key!"
+            make console execute "/lp user %player% permission unset games.reward.lk1 server=red"
+            make console execute "/lp user %player% permission unset games.reward.lk1 server=games"
+    
+    if player has permission "games.reward.lk2":
+        if player has enough space for 1 diamond shovel:
+            make console execute "/crates key %player% teamattack 1"
+            send "&e&l> &eYou've redeemed Minigame Points for a Team Attack Loot Key!"
+            make console execute "/lp user %player% permission unset games.reward.lk2 server=red"
+            make console execute "/lp user %player% permission unset games.reward.lk2 server=games"
+    
+    if player has permission "games.reward.lk3":
+        if player has enough space for 1 diamond shovel:
+            make console execute "/crates key %player% drift 1"
+            send "&e&l> &eYou've redeemed Minigame Points for a Drift Loot Key!"
+            make console execute "/lp user %player% permission unset games.reward.lk3 server=red"
+            make console execute "/lp user %player% permission unset games.reward.lk3 server=games"
+    
+    if player has permission "games.reward.lk4":
+        if player has enough space for 1 diamond shovel:
+            make console execute "/crates key %player% hideandseek 1"
+            send "&e&l> &eYou've redeemed Minigame Points for a Hide&Seek Loot Key!"
+            make console execute "/lp user %player% permission unset games.reward.lk4 server=red"
+            make console execute "/lp user %player% permission unset games.reward.lk4 server=games"
+    
+    if player has permission "games.reward.lk5":
+        if player has enough space for 1 diamond shovel:
+            make console execute "/crates key %player% castledefend 1"
+            send "&e&l> &eYou've redeemed Minigame Points for a Castle Defend Loot Key!"
+            make console execute "/lp user %player% permission unset games.reward.lk5 server=red"
+            make console execute "/lp user %player% permission unset games.reward.lk5 server=games"
+    
+
+
+
+    if player has permission "games.reward.egg1":
+        if player has enough space for 1 diamond shovel:
+            give player 1 skeleton spawn egg
+            send "&e&l> &eYou've redeemed Minigame Points for a Skeleton Spawn Egg!"
+            make console execute "/lp user %player% permission unset games.reward.egg1 server=red"
+            make console execute "/lp user %player% permission unset games.reward.egg1 server=games"
+    
+    if player has permission "games.reward.egg2":
+        if player has enough space for 1 diamond shovel:
+            give player 1 blaze spawn egg
+            send "&e&l> &eYou've redeemed Minigame Points for a Blaze Spawn Egg!"
+            make console execute "/lp user %player% permission unset games.reward.egg2 server=red"
+            make console execute "/lp user %player% permission unset games.reward.egg2 server=games"
+    
+    if player has permission "games.reward.egg3":
+        if player has enough space for 1 diamond shovel:
+            give player 1 Sheep spawn egg
+            send "&e&l> &eYou've redeemed Minigame Points for a Sheep Spawn Egg!"
+            make console execute "/lp user %player% permission unset games.reward.egg3 server=red"
+            make console execute "/lp user %player% permission unset games.reward.egg3 server=games"
+    
+    if player has permission "games.reward.egg4":
+        if player has enough space for 1 diamond shovel:
+            give player 1 dolphin spawn egg
+            send "&e&l> &eYou've redeemed Minigame Points for a Dolphin Spawn Egg!"
+            make console execute "/lp user %player% permission unset games.reward.egg4 server=red"
+            make console execute "/lp user %player% permission unset games.reward.egg4 server=games"
+    
+    if player has permission "games.reward.egg5":
+        if player has enough space for 1 diamond shovel:
+            give player 1 bee spawn egg
+            send "&e&l> &eYou've redeemed Minigame Points for a Bee Spawn Egg!"
+            make console execute "/lp user %player% permission unset games.reward.egg5 server=red"
+            make console execute "/lp user %player% permission unset games.reward.egg5 server=games"
+    
+    
+    
+    

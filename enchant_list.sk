@@ -1,0 +1,451 @@
+command /enchantmentlist [<number>]:
+    permission:minecraft.op
+    trigger:
+        set {_check} to false
+        if arg-1 is not set:
+            set {_check} to true
+        else if arg-1 is 1:
+            set {_check} to true
+        if {_check} is true:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with slimeball named "&aPage 1: A-C" to be unstealable
+            format slot 2 of player with magma cream named "&cPage 2: C-J" to close then run [execute player command "/enchantmentlist 2"]
+            format slot 3 of player with magma cream named "&cPage 3: J-M" to close then run [execute player command "/enchantmentlist 3"]
+            format slot 4 of player with magma cream named "&cPage 4: M-T" to close then run [execute player command "/enchantmentlist 4"]
+            format slot 5 of player with magma cream named "&cPage 5: T-W" to close then run [execute player command "/enchantmentlist 5"]
+            format slot 6 of player with magma cream named "&cPage 6: X-Y" to close then run [execute player command "/enchantmentlist 6"]
+            format slot 7 of player with magma cream named "&cPage 7: Y-Z" to close then run [execute player command "/enchantmentlist 7"]
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            format slot 10 of player with enchanted book named "&aAegis"  with lore "&8» &fChance to gain speed when taking fall damage" to be unstealable
+            format slot 11 of player with enchanted book named "&aAlien Implants"  with lore "&8» &fAutomatically heal 2x the HP of", "&f   normal Implants at 2x the rate, and at max level all", and "&f   hunger loss is disabled. Requires Implants III" to be unstealable
+            format slot 12 of player with enchanted book named "&aAmbit"  with lore "&8» &fDamages mobs within a radius that" and "&f   increases with the level of enchant" to be unstealable
+            format slot 13 of player with enchanted book named "&aAngelic"  with lore "&8» &fHeals health over time whenever damaged" to be unstealable
+            format slot 14 of player with enchanted book named "&aAnnihilate"  with lore "&8» &fDemolish your opponent's armour quicker" to be unstealable
+            format slot 15 of player with enchanted book named "&aAnti Gravity"  with lore "&8» &fSuper jump" to be unstealable
+            format slot 16 of player with enchanted book named "&aAqua"  with lore "&8» &fDeal double damage while in water" to be unstealable
+            format slot 17 of player with enchanted book named "&aAquatic"  with lore "&8» &fBreathe underwater" to be unstealable
+            format slot 18 of player with enchanted book named "&aArcher"  with lore "&8» &fIncreases damage dealt with bows" to be unstealable
+            format slot 19 of player with enchanted book named "&aArmored"  with lore "&8» &fDecreases damage from" and "&f   enemy swords by 1.85%% per level" to be unstealable
+            format slot 20 of player with enchanted book named "&aArrow Break"  with lore "&8» &fChance for arrows to bounce off you" and "&f   while holding item with this enchant" to be unstealable
+            format slot 21 of player with enchanted book named "&aArrow Deflect"  with lore "&8» &fPrevents you from being damaged by ", "&f   enemy arrows more often than once" and "&f   every level x 400 milliseconds" to be unstealable
+            format slot 22 of player with enchanted book named "&aArrow Lifesteal"  with lore "&8» &fChance to steal health from opponent" to be unstealable
+            format slot 23 of player with enchanted book named "&aArsonist"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+        else if arg-1 is 2:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with magma cream named "&cPage 1: A-C" to close then run [execute player command "/enchantmentlist 1"]
+            format slot 2 of player with slimeball named "&aPage 2: C-J" to be unstealable
+            format slot 3 of player with magma cream named "&cPage 3: J-M" to close then run [execute player command "/enchantmentlist 3"]
+            format slot 4 of player with magma cream named "&cPage 4: M-T" to close then run [execute player command "/enchantmentlist 4"]
+            format slot 5 of player with magma cream named "&cPage 5: T-W" to close then run [execute player command "/enchantmentlist 5"]
+            format slot 6 of player with magma cream named "&cPage 6: X-Y" to close then run [execute player command "/enchantmentlist 6"]
+            format slot 7 of player with magma cream named "&cPage 7: Y-Z" to close then run [execute player command "/enchantmentlist 7"]
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+        else if arg-1 is 3:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with magma cream named "&cPage 1: A-C" to close then run [execute player command "/enchantmentlist 1"]
+            format slot 2 of player with magma cream named "&cPage 2: C-J" to close then run [execute player command "/enchantmentlist 2"]
+            format slot 3 of player with slimeball named "&aPage 3: J-M" to be unstealable
+            format slot 4 of player with magma cream named "&cPage 4: M-T" to close then run [execute player command "/enchantmentlist 4"]
+            format slot 5 of player with magma cream named "&cPage 5: T-W" to close then run [execute player command "/enchantmentlist 5"]
+            format slot 6 of player with magma cream named "&cPage 6: X-Y" to close then run [execute player command "/enchantmentlist 6"]
+            format slot 7 of player with magma cream named "&cPage 7: Y-Z" to close then run [execute player command "/enchantmentlist 7"]
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+        else if arg-1 is 4:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with magma cream named "&cPage 1: A-C"  to close then run [execute player command "/enchantmentlist 1"]
+            format slot 2 of player with magma cream named "&cPage 2: C-J" to close then run [execute player command "/enchantmentlist 2"]
+            format slot 3 of player with magma cream named "&cPage 3: J-M" to close then run [execute player command "/enchantmentlist 3"]
+            format slot 4 of player with slimeball named "&aPage 4: M-T" to be unstealable
+            format slot 5 of player with magma cream named "&cPage 5: T-W" to close then run [execute player command "/enchantmentlist 5"]
+            format slot 6 of player with magma cream named "&cPage 6: X-Y" to close then run [execute player command "/enchantmentlist 6"]
+            format slot 7 of player with magma cream named "&cPage 7: Y-Z" to close then run [execute player command "/enchantmentlist 7"]
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+        else if arg-1 is 5:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with magma cream named "&cPage 1: A-C" to close then run [execute player command "/enchantmentlist 1"]
+            format slot 2 of player with magma cream named "&cPage 2: C-J" to close then run [execute player command "/enchantmentlist 2"]
+            format slot 3 of player with magma cream named "&cPage 3: J-M" to close then run [execute player command "/enchantmentlist 3"]
+            format slot 4 of player with magma cream named "&cPage 4: M-T" to close then run [execute player command "/enchantmentlist 4"]
+            format slot 5 of player with slimeball named "&aPage 5: T-W" to be unstealable
+            format slot 6 of player with magma cream named "&cPage 6: X-Y" to close then run [execute player command "/enchantmentlist 6"]
+            format slot 7 of player with magma cream named "&cPage 7: Y-Z" to close then run [execute player command "/enchantmentlist 7"]
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+        else if arg-1 is 6:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with magma cream named "&cPage 1: A-C" to close then run [execute player command "/enchantmentlist 1"]
+            format slot 2 of player with magma cream named "&cPage 2: C-J" to close then run [execute player command "/enchantmentlist 2"]
+            format slot 3 of player with magma cream named "&cPage 3: J-M" to close then run [execute player command "/enchantmentlist 3"]
+            format slot 4 of player with magma cream named "&cPage 4: M-T" to close then run [execute player command "/enchantmentlist 4"]
+            format slot 5 of player with magma cream named "&cPage 5: T-W" to close then run [execute player command "/enchantmentlist 5"]
+            format slot 6 of player with slimeball named "&aPage 6: X-Y" to be unstealable
+            format slot 7 of player with magma cream named "&cPage 7: Y-Z" to close then run [execute player command "/enchantmentlist 7"]
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+        else if arg-1 is 7:
+            wait 3 ticks
+            open chest with 6 rows named "&2&oSourbloc Enchantment List" to player
+            set {_chestSlot} to 0
+            loop 54 times:
+                format slot {_chestSlot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_chestSlot}
+            #wait 1 tick
+
+            format slot 1 of player with magma cream named "&cPage 1: A-C" to close then run [execute player command "/enchantmentlist 1"]
+            format slot 2 of player with magma cream named "&cPage 2: C-J" to close then run [execute player command "/enchantmentlist 2"]
+            format slot 3 of player with magma cream named "&cPage 3: J-M" to close then run [execute player command "/enchantmentlist 3"]
+            format slot 4 of player with magma cream named "&cPage 4: M-T" to close then run [execute player command "/enchantmentlist 4"]
+            format slot 5 of player with magma cream named "&cPage 5: T-W" to close then run [execute player command "/enchantmentlist 5"]
+            format slot 6 of player with magma cream named "&cPage 6: X-Y" to close then run [execute player command "/enchantmentlist 6"]
+            format slot 7 of player with slimeball named "&aPage 7: Y-Z" to be unstealable
+
+            #set {_chestSlot} to 9
+            #loop 45 times:
+            #    format slot {_chestSlot} of player with enchanted book named "Enchant X" to be unstealable
+            #    add 1 to {_chestSlot}
+
+            format slot 9 of player with enchanted book named "&aAbiding"  with lore "&8» &fWeapons with this enchant become unbreakable" to be unstealable
+            #  
+            # ...
+            #
+            format slot 53 of player with enchanted book named "&aPlaceholder Enchant"  with lore "&8» &fChance to deal more damage whilst on fire" to be unstealable
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

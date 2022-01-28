@@ -1,0 +1,29 @@
+command /rtp:
+    trigger:
+        set {_location} to location of block below player
+        set {_health} to health of player
+        send "&aHold on..." to player
+        wait 5 seconds
+        set {_movecheck} to location of block below player
+        set {_healthcheck} to health of player
+        if {_movecheck} = {_location}:
+            if {_healthcheck} = {_health}:
+                send "&aYou are now randomly teleporting into &2wilderness&a!" to player
+                teleport player to location(89, 64, 359, world "Sourbloc")
+                execute console command "spreadplayers 0 0 1000 1000 false %player%"
+            else:
+                send "&aLooks like you're too sick to travel!" to player
+        else:
+            send "&aSorry, we can't teleport you as you're moving!" to player
+
+
+command /setsail <player>:
+    permission: group.admin
+    trigger:
+        wait 10 ticks
+        send "&9Setting sail..." to player
+        teleport player to location(138, 97, 271, world "Hub")
+        wait 4 seconds
+        teleport player to location(89, 64, 359, world "Sourbloc")
+        execute console command "spreadplayers 0 0 1000 1000 false %arg 1%"
+        send "&9You have been randomly transported into &2Wilderness&3!" to player

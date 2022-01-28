@@ -1,0 +1,27 @@
+on death:
+    victim is player
+    attacker is not player
+    set {_x} to victim's x coordinate
+    set {_z} to victim's z coordinate
+
+    if {_x} is greater than 10002:
+        cancel event
+        wait 2 ticks
+        make console execute "/spawn %victim%"
+        send "&eBecause you died outside the world border, you kept your items." to victim
+    else if {_x} is less than -10002:
+        cancel event
+        wait 2 ticks
+        make console execute "/spawn %victim%"
+        send "&eBecause you died outside the world border, you kept your items." to victim
+
+    else if {_z} is greater than 10002:
+        cancel event
+        wait 2 ticks
+        make console execute "/spawn %victim%"
+        send "&eBecause you died outside the world border, you kept your items." to victim
+    else if {_z} is less than -10002:
+        cancel event
+        wait 2 ticks
+        make console execute "/spawn %victim%"
+        send "&eBecause you died outside the world border, you kept your items." to victim

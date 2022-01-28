@@ -1,0 +1,1166 @@
+# ###############################################################################################
+#                         COMMANDS AND GUI FOR GAMES REWARDS 
+#                   Creates directory to store & save all games points data 
+#               GUI to sell rewards that will be given out on red / blue servers
+#                               Created By: LuuMiz
+# ###############################################################################################
+on load:
+    wait 1 second
+    if directory "plugins/Skript/GamesPoints" is missing:
+        create directory "plugins/Skript/GamesPoints"
+    if file "plugins/Skript/GamesPoints/player_data.yml" is missing:
+        create file "plugins/Skript/GamesPoints/player_data.yml"
+    if directory "plugins/Skript/GamesPoints/backups" is missing:
+        create directory "plugins/Skript/GamesPoints/backups"
+    wait 1 second 
+    load yml "plugins/Skript/GamesPoints/player_data.yml" as "plugins/Skript/GamesPoints/player_data.yml"
+
+# ###############################################################################################
+#                         COMMAND   /GIVEGAMEPTS  &  /CHECKGAMEPTS
+# ###############################################################################################
+command /givegamespts <offlineplayer> <integer>:
+    permission: minecraft.op
+    trigger:
+        set {_pointsBefore} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_pointsBefore} is not set:
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to arg-2
+        else if {_pointsBefore} is "<none>":
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to arg-2
+        else:
+            set {_newPoints} to {_pointsBefore} + arg-2
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_newPoints}
+
+        save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+command /checkgamepts <offlineplayer>:
+    permission: minecraft.op
+    trigger:
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        send "%{_points}%"
+
+# ###############################################################################################
+#                         COMMAND /GAMESHOP
+# ###############################################################################################
+command /gameshop [<offlineplayer>] [<text>]:
+    trigger:
+        wait 3 ticks
+
+        # ###############################################################################################
+        #                         GAMES SHOP MENU
+        # ###############################################################################################
+        if arg-1 is not set:
+            open chest with 6 rows named "Minigames Points Shop" to player
+        else if arg-1 is "<none>":
+            open chest with 6 rows named "Minigames Points Shop" to player
+        else:
+            open chest with 6 rows named "Minigames Points Shop" to arg-1
+            set {_aapslot} to 0
+            loop 54 times:
+                format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_aapslot}
+            if arg-2 is not set:
+                format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/gameshop %arg-1% red"]
+                format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/gameshop %arg-1% blue"]
+            else if arg-2 is "<none>":
+                format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/gameshop %arg-1% red"]
+                format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/gameshop %arg-1% blue"]
+            else if arg-2 is "red":
+                format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/gameshop %arg-1% red"]
+                format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/gameshop %arg-1% blue"]
+            else if arg-2 is "blue":
+                format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/gameshop %arg-1% red"]
+                format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/gameshop %arg-1% blue"]
+            
+            set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+            if {_points} is "<none>":
+                set {_points} to 0
+            else if {_points} is not set:
+                set {_points} to 0
+            format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+            # Loot Crate Key Previews
+            format slot 19 of arg-1 with glowing tripwire hook named "&aMinigame LootCrate Keys" with lore "&8» &7Open Game Crates on Red/Blue" to be unstealable
+            format slot 20 of arg-1 with white stained glass pane named "&6" to be unstealable
+            format slot 21 of arg-1 with glowing tripwire hook named "&aZombie Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/zombiekeyshop %arg-1% %arg-2%"]
+            format slot 22 of arg-1 with glowing tripwire hook named "&aTeam Attack Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/takeyshop %arg-1% %arg-2%"]
+            format slot 23 of arg-1 with glowing tripwire hook named "&aDrift Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/driftkeyshop %arg-1% %arg-2%"]
+            format slot 24 of arg-1 with glowing tripwire hook named "&aHide & Seek Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/hnskeyshop %arg-1% %arg-2%"]
+            format slot 25 of arg-1 with glowing tripwire hook named "&aCastle Defend Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/cdkeyshop %arg-1% %arg-2%"]
+
+            # Game Booster Sales - COMING SOON
+            format slot 28 of arg-1 with golden sword named "&aGame Boosters" with lore "&8» &cCOMING SOON","&8» &7Unlock in-game power ups","&8» &7Single use" to be unstealable
+            format slot 29 of arg-1 with white stained glass pane named "&6" to be unstealable
+            format slot 30 of arg-1 with cake named "&aZombie Health Boost" with lore "&8» &7COST: 200 Points","&8» &7Get Double Heath Boost for 30 seconds","&8» &7One use per game" to be unstealable
+            format slot 31 of arg-1 with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+            format slot 32 of arg-1 with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+            format slot 33 of arg-1 with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+            format slot 34 of arg-1 with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+
+            # Spawn Egg Sales
+            format slot 37 of arg-1 with villager spawn egg named "&aSpawn Eggs" with lore "&8» &7Win a spawn egg on red/blue" to be unstealable
+            format slot 38 of arg-1 with white stained glass pane named "&6" to be unstealable
+            format slot 39 of arg-1 with skeleton egg named "&aSkeleton Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se1 %arg-1% %arg-2%"]
+            format slot 40 of arg-1 with blaze spawn egg named "&aBlaze Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se2 %arg-1% %arg-2%"]
+            format slot 41 of arg-1 with sheep spawn egg named "&aSheep Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se3 %arg-1% %arg-2%"]
+            format slot 42 of arg-1 with dolphin spawn egg named "&aDolphin Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se4 %arg-1% %arg-2%"]
+            format slot 43 of arg-1 with bee spawn egg named "&aBee Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se5 %arg-1% %arg-2%"]
+
+            set {_stop} to true
+
+        if {_stop} is not true:
+            set {_aapslot} to 0
+            loop 54 times:
+                format slot {_aapslot} of player with gray stained glass pane named "&6" to be unstealable
+                add 1 to {_aapslot}
+            if arg-2 is not set:
+                format slot 2 of player with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/gameshop %player% red"]
+                format slot 6 of player with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/gameshop %player% blue"]
+            else if arg-2 is "<none>":
+                format slot 2 of player with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/gameshop %player% red"]
+                format slot 6 of player with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/gameshop %player% blue"]
+            else if arg-2 is "red":
+                format slot 2 of player with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/gameshop %player% red"]
+                format slot 6 of player with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/gameshop %player% blue"]
+            else if arg-2 is "blue":
+                format slot 2 of player with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/gameshop %player% red"]
+                format slot 6 of player with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/gameshop %player% blue"]
+            
+            set {_points} to yaml value "PlayerPoints.%uuid of player%" from "plugins/Skript/GamesPoints/player_data.yml"
+            if {_points} is "<none>":
+                set {_points} to 0
+            else if {_points} is not set:
+                set {_points} to 0
+            format slot 4 of player with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+            # Loot Crate Key Previews
+            format slot 19 of player with glowing tripwire hook named "&aMinigame LootCrate Keys" with lore "&8» &7Open Game Crates on Red/Blue" to be unstealable
+            format slot 20 of player with white stained glass pane named "&6" to be unstealable
+            format slot 21 of player with glowing tripwire hook named "&aZombie Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/zombiekeyshop %player% %arg-1%"]
+            format slot 22 of player with glowing tripwire hook named "&aTeam Attack Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/takeyshop %player% %arg-1%"]
+            format slot 23 of player with glowing tripwire hook named "&aDrift Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/driftkeyshop %player% %arg-1%"]
+            format slot 24 of player with glowing tripwire hook named "&aHide & Seek Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/hnskeyshop %player% %arg-1%"]
+            format slot 25 of player with glowing tripwire hook named "&aCastle Defend Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/cdkeyshop %player% %arg-1%"]
+
+            # Game Booster Sales - COMING SOON
+            format slot 28 of player with golden sword named "&aGame Boosters" with lore "&8» &cCOMING SOON","&8» &7Unlock in-game power ups","&8» &7Single use" to be unstealable
+            format slot 29 of player with white stained glass pane named "&6" to be unstealable
+            format slot 30 of player with cake named "&aZombie Health Boost" with lore "&8» &7COST: 200 Points","&8» &7Get Double Heath Boost for 30 seconds","&8» &7One use per game" to be unstealable
+            format slot 31 of player with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+            format slot 32 of player with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+            format slot 33 of player with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+            format slot 34 of player with beacon named "&aTeam Attack Strength Beacon" with lore "&8» &7COST: 400 Points","&8» &7Apply Strength I to nearby teammates","&7   within 10 blocks","&8» &7One use per game" to be unstealable
+
+            # Spawn Egg Sales
+            format slot 37 of player with villager spawn egg named "&aSpawn Eggs" with lore "&8» &7Win a spawn egg on red/blue" to be unstealable
+            format slot 38 of player with white stained glass pane named "&6" to be unstealable
+            format slot 39 of player with skeleton egg named "&aSkeleton Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se1 %player% %arg-2%"]
+            format slot 40 of player with blaze spawn egg named "&aBlaze Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se2 %player% %arg-2%"]
+            format slot 41 of player with sheep spawn egg named "&aSheep Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se3 %player% %arg-2%"]
+            format slot 42 of player with dolphin spawn egg named "&aDolphin Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se4 %player% %arg-2%"]
+            format slot 43 of player with bee spawn egg named "&aBee Spawn Egg" with lore "&8» &7COST: 1000 Points" to close then run [execute console command "/confirmtrade_se5 %player% %arg-2%"]
+
+        # ###############################################################################################
+        #                         ZOMBIE KEY SHOP MENU
+        # ###############################################################################################
+command /zombiekeyshop <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Zombie: Possible Wins" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/zombiekeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/zombiekeyshop %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/zombiekeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/zombiekeyshop %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/zombiekeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/zombiekeyshop %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/zombiekeyshop %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/zombiekeyshop %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 13 of arg-1 with glowing tripwire hook named "&aZombie Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/confirmtrade_lk1 %arg-1% %arg-2%"]
+
+        format slot 19 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 20 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 21 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 22 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 23 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 24 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 25 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 28 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 29 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 30 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 31 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 32 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 33 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+        format slot 34 of arg-1 with dirt named "&aZombie Item" with lore "&erandom lore" to be unstealable
+
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+        # ###############################################################################################
+        #                         TEAM ATTACK KEY SHOP MENU
+        # ###############################################################################################
+command /takeyshop <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        
+        open chest with 5 rows named "Team Attack: Possible Wins" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/takeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/takeyshop %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/takeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/takeyshop %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/takeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/takeyshop %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/takeyshop %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/takeyshop %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 13 of arg-1 with glowing tripwire hook named "&aTeam Attack Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/confirmtrade_lk2 %arg-1% %arg-2%"]
+
+        format slot 19 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 20 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 21 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 22 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 23 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 24 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 25 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 28 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 29 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 30 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 31 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 32 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 33 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+        format slot 34 of arg-1 with dirt named "&aTeam Attack Item" with lore "&erandom lore" to be unstealable
+
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+        # ###############################################################################################
+        #                         DRIFT KEY SHOP MENU
+        # ###############################################################################################
+command /driftkeyshop <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Drift: Possible Wins" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/driftkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/driftkeyshop %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/driftkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/driftkeyshop %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/driftkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/driftkeyshop %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/driftkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/driftkeyshop %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 13 of arg-1 with glowing tripwire hook named "&aDrift Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/confirmtrade_lk3 %arg-1% %arg-2%"]
+
+        format slot 19 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 20 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 21 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 22 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 23 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 24 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 25 of arg-1 with dirt named "&aDrift" with lore "&erandom lore" to be unstealable
+        format slot 28 of arg-1 with dirt named "&aDrift" with lore "&erandom lore" to be unstealable
+        format slot 29 of arg-1 with dirt named "&aDrift" with lore "&erandom lore" to be unstealable
+        format slot 30 of arg-1 with dirt named "&aDrift" with lore "&erandom lore" to be unstealable
+        format slot 31 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 32 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 33 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+        format slot 34 of arg-1 with dirt named "&aDrift Item" with lore "&erandom lore" to be unstealable
+
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+        # ###############################################################################################
+        #                         HIDE AND SEEK KEY SHOP MENU
+        # ###############################################################################################
+command /hnskeyshop <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Hide and Seek: Possible Wins" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/hnskeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/hnskeyshop %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/hnskeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/hnskeyshop %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/hnskeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/hnskeyshop %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/hnskeyshop %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/hnskeyshop %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 13 of arg-1 with glowing tripwire hook named "&aHide and Seek Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/confirmtrade_lk4 %arg-1% %arg-2%"]
+
+        format slot 19 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 20 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 21 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 22 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 23 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 24 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 25 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 28 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 29 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 30 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 31 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 32 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 33 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+        format slot 34 of arg-1 with dirt named "&aHide and Seek Item" with lore "&erandom lore" to be unstealable
+
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+        # ###############################################################################################
+        #                         CASTLE DEFEND KEY SHOP MENU
+        # ###############################################################################################
+command /cdkeyshop <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Castle Defend: Possible Wins" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/cdkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/cdkeyshop %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/cdkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/cdkeyshop %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/cdkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/cdkeyshop %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/cdkeyshop %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/cdkeyshop %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 13 of arg-1 with glowing tripwire hook named "&aCastle Defend Key" with lore "&8» &7COST: 500 Points","&8» &7Click to see possible rewards" to close then run [execute console command "/confirmtrade_lk5 %arg-1% %arg-2%"]
+
+        format slot 19 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 20 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 21 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 22 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 23 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 24 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 25 of arg-1 with dirt named "&aCastle Defend" with lore "&erandom lore" to be unstealable
+        format slot 28 of arg-1 with dirt named "&aCastle Defend" with lore "&erandom lore" to be unstealable
+        format slot 29 of arg-1 with dirt named "&aCastle Defend" with lore "&erandom lore" to be unstealable
+        format slot 30 of arg-1 with dirt named "&aCastle Defend" with lore "&erandom lore" to be unstealable
+        format slot 31 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 32 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 33 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+        format slot 34 of arg-1 with dirt named "&aCastle Defend Item" with lore "&erandom lore" to be unstealable
+
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+
+# ###############################################################################################
+#                         CONFIRM TRADE GUI SECTION
+# ###############################################################################################
+
+
+    # ###############################################################################################
+    #                         CONFIRM LOOT KEYS
+    # ###############################################################################################
+command /confirmtrade_lk1 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk1 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk1 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk1 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk1 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk1 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk1 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk1 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk1 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with glowing tripwire hook named "&aZombie Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_lk1 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_lk2 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk2 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk2 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk2 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk2 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk2 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk2 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk2 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk2 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with glowing tripwire hook named "&aTeam Attack Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_lk2 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_lk3 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk3 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk3 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk3 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk3 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk3 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk3 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk3 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk3 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with glowing tripwire hook named "&aDrift Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_lk3 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_lk4 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk4 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk4 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk4 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk4 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk4 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk4 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk4 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk4 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with glowing tripwire hook named "&aHide&seek Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_lk4 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_lk5 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk5 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk5 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk5 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk5 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk5 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_lk5 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_lk5 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_lk5 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with glowing tripwire hook named "&aCastle Defend Key" with lore "&8» &7COST: 500 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_lk5 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+
+    # ###############################################################################################
+    #                         CONFIRM SPAWN EGGS
+    # ###############################################################################################
+command /confirmtrade_se1 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se1 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se1 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se1 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se1 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se1 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se1 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se1 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se1 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with skeleton egg named "&aSkeleton Spawn Egg" with lore "&8» &7COST: 1000 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_egg1 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_se2 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se2 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se2 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se2 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se2 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se2 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se2 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se2 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se2 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with blaze egg named "&aBlaze Spawn Egg" with lore "&8» &7COST: 1000 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_egg2 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_se3 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se3 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se3 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se3 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se3 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se3 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se3 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se3 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se3 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with sheep egg named "&aSheep Spawn Egg" with lore "&8» &7COST: 1000 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_egg3 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_se4 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se4 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se4 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se4 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se4 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se4 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se4 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se4 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with dolphin egg named "&aDolphin Spawn Egg" with lore "&8» &7COST: 1000 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_egg4 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+command /confirmtrade_se5 <offlineplayer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+
+        open chest with 5 rows named "Confirm Trade" to arg-1
+
+        set {_aapslot} to 0
+        loop 45 times:
+            format slot {_aapslot} of arg-1 with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        if arg-2 is not set:
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% blue"]
+        else if arg-2 is "<none>":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% blue"]
+        else if arg-2 is "red":
+            format slot 2 of arg-1 with glowing red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se5 %arg-1% red"]
+            format slot 6 of arg-1 with blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% blue"]
+        else if arg-2 is "blue":
+            format slot 2 of arg-1 with red stained glass named "&cRed Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Red Server" to close then run [execute console command "/confirmtrade_se5 %arg-1% red"]
+            format slot 6 of arg-1 with glowing blue stained glass named "&bBlue Server Purchase" with lore "&8» &7Select this to", "&7   purchase rewards on Blue Server","&8» &eSELECTED" to close then run [execute console command "/confirmtrade_se5 %arg-1% blue"]
+        
+        set {_points} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_points} is "<none>":
+            set {_points} to 0
+        else if {_points} is not set:
+            set {_points} to 0
+        format slot 4 of arg-1 with glowing emerald named "&aMinigame Point Balance" with lore "&8» &7%{_points}%" to be unstealable
+
+        format slot 22 of arg-1 with bee egg named "&aBee Spawn Egg" with lore "&8» &7COST: 1000 Points","&8» &7Click to Purchase!" to close then run [execute console command "/reward_egg5 %arg-1% 500 %arg-2%"]
+        format slot 40 of arg-1 with barrier named "&cBack" with lore "&8» &7Return to Gameshop Menu" to close then run [execute console command "/gameshop %arg-1% %arg-2%"]
+
+
+# ###############################################################################################
+#                         CONFIRMATION MESSAGES & LP PERM SETS
+#       need seperate skript running on red & blue to detect perms on login then give rewards
+# ###############################################################################################
+
+# ###############################################################################################
+#                         CRATE KEYS
+# ###############################################################################################
+command /reward_lk1 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.lk1":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.lk1":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 500:
+            set {_currentpoints} to {_currentpoints} - 500
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Zombie Loot Key!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.lk1 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.lk1 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_lk2 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.lk2":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.lk2":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 500:
+            set {_currentpoints} to {_currentpoints} - 500
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Team Attack Loot Key!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.lk2 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.lk2 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_lk3 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.lk3":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.lk3":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 500:
+            set {_currentpoints} to {_currentpoints} - 500
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Drift Loot Key!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.lk3 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.lk3 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_lk4 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.lk4":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.lk4":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 500:
+            set {_currentpoints} to {_currentpoints} - 500
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Hide&Seek Loot Key!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.lk4 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.lk4 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_lk5 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.lk5":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.lk5":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 500:
+            set {_currentpoints} to {_currentpoints} - 500
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Castle Defend Loot Key!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.lk5 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.lk5 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+# ###############################################################################################
+#                         SPAWN EGGS
+# ###############################################################################################
+
+command /reward_egg1 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.egg1":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.egg1":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 1000:
+            set {_currentpoints} to {_currentpoints} - 1000
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Skeleton Spawn Egg!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.egg1 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.egg1 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_egg2 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.egg2":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.egg2":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 1000:
+            set {_currentpoints} to {_currentpoints} - 1000
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Blaze Spawn Egg!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.egg2 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.egg2 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_egg3 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.egg3":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.egg3":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 1000:
+            set {_currentpoints} to {_currentpoints} - 1000
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Sheep Spawn Egg!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.egg3 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.egg3 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_egg4 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.egg4":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.egg4":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 1000:
+            set {_currentpoints} to {_currentpoints} - 1000
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Dolphin Spawn Egg!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.egg4 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.egg4 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1
+
+command /reward_egg5 <offlineplayer> <integer> <text>:
+    executable by: console
+    trigger:
+        wait 3 ticks
+        if arg-3 is not set:
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        else if arg-3 is "<none>":
+            send "&e&l> &ePlease select a world to purchase this on." to arg-1
+            stop
+        
+        if arg-1 has permission "games.reward.egg5":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+        else if arg-1 has permission "games.reward.egg5":
+            send "&e&l> &eYou need to claim this reward before purchasing another!" to arg-1
+            stop
+
+        set {_currentpoints} to yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml"
+        if {_currentpoints} is "<none>":
+            set {_currentpoints} to 0
+        else if {_currentpoints} is not set:
+            set {_currentpoints} to 0
+        if {_currentpoints} is greater than or equal to 1000:
+            set {_currentpoints} to {_currentpoints} - 1000
+            set yaml value "PlayerPoints.%uuid of arg-1%" from "plugins/Skript/GamesPoints/player_data.yml" to {_currentpoints}
+            save yaml "plugins/Skript/GamesPoints/player_data.yml"
+
+            send "&e&l> &eCongrats! You've Purchased A Bee Spawn Egg!" to arg-1
+            send "&e&l> &eLog into %arg-3% &eserver to recieve your reward." to arg-1
+            send "&e&l> &eRemaining Points: %{_currentpoints}%" to arg-1
+            make console execute command "lp user %arg-1% permission set games.reward.egg5 true server=%arg-3%"
+            make console execute command "lp user %arg-1% permission set games.reward.egg5 true server=games"
+        else:
+            send "&e&l> &eYou do not have enough points to make this purchase." to arg-1

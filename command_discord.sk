@@ -1,0 +1,5 @@
+command /discord [<text>]:
+    executable by: players
+    trigger:
+        message "&9&bDiscord:&f <link:https://discord.gg/f7XqErg5XU>&9&lClick Here!<reset>"  
+    

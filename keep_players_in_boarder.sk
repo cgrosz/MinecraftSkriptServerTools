@@ -1,0 +1,11 @@
+on portal:
+    if player is in "world":
+        wait 2 ticks
+        if player's x-coordinate is greater than 12500:
+            make player execute "/spawn"
+        else if player's z-coordinate is greater than 12500:
+            make player execute "/spawn"
+        else if player's x-coordinate is less than -12500:
+            make player execute "/spawn"
+        else if player's z-coordinate is less than -12500:
+            make player execute "/spawn"

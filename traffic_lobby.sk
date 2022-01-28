@@ -1,0 +1,114 @@
+
+# admin info for telling how many people are using the /worlds gui when they first connect to lobby
+# and which server they are going to
+
+# also logs current traffic numbers to Traffic_Logs/lobby_newPlayers.log each week 
+
+every 7 days in "world":
+    log ">>> Traffic Info during the week of %now% :" to "Traffic_Logs/lobby_newPlayers.log"
+    log "TOTAL JOINS during the week of %now% : %{lc.stats.lobbyTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    set {lc.stats.totaljoined} to {lc.stats.redTraffic} + {lc.stats.blueTraffic} + {lc.stats.blackTraffic} + {lc.stats.gamesTraffic} + {lc.stats.skyblockTraffic} + {lc.stats.creativeTraffic}
+    log "New Players That Connected To Another Server: %{lc.stats.totaljoined}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log "RED - %{lc.stats.redTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log "BLUE - %{lc.stats.blueTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log "BLACK - %{lc.stats.blackTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log "GAMES - %{lc.stats.gamesTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log "SKYBLOCK - %{lc.stats.skyblockTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log "CREATIVE - %{lc.stats.creativeTraffic}%" to "Traffic_Logs/lobby_newPlayers.log"
+    log " " to "Traffic_Logs/lobby_newPlayers.log"
+    log " " to "Traffic_Logs/lobby_newPlayers.log"
+
+on first join:
+    set {lc.stats.isNewPlayer.%uuid of player%} to true
+    add 1 to {lc.stats.lobbyTraffic}
+
+on command "/red":
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        add 1 to {lc.stats.redTraffic}
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+on command "/blue":
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        add 1 to {lc.stats.blueTraffic}
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+on command "/black":
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        add 1 to {lc.stats.blackTraffic}
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+on command "/games":
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        add 1 to {lc.stats.gamesTraffic}
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+on command "/skyblock":
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        add 1 to {lc.stats.skyblockTraffic}
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+on command "/creative":
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        add 1 to {lc.stats.creativeTraffic}
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+command /traffic_red <offlineplayer>:
+    executable by: console
+    trigger:
+        if {lc.stats.isNewPlayer.%uuid of arg-1%} is true:
+            add 1 to {lc.stats.redTraffic}
+            set {lc.stats.isNewPlayer.%uuid of arg-1%} to false
+
+command /traffic_blue <offlineplayer>:
+    executable by: console
+    trigger:
+        if {lc.stats.isNewPlayer.%uuid of arg-1%} is true:
+            add 1 to {lc.stats.blueTraffic}
+            set {lc.stats.isNewPlayer.%uuid of arg-1%} to false
+
+command /traffic_black  <offlineplayer>:
+    executable by: console
+    trigger:
+        if {lc.stats.isNewPlayer.%uuid of arg-1%} is true:
+            add 1 to {lc.stats.blackTraffic}
+            set {lc.stats.isNewPlayer.%uuid of arg-1%} to false
+
+command /traffic_games <offlineplayer>:
+    executable by: console
+    trigger:
+        if {lc.stats.isNewPlayer.%uuid of arg-1%} is true:
+            add 1 to {lc.stats.gamesTraffic}
+            set {lc.stats.isNewPlayer.%uuid of arg-1%} to false
+
+command /traffic_skyblock <offlineplayer>:
+    executable by: console
+    trigger:
+        if {lc.stats.isNewPlayer.%uuid of arg-1%} is true:
+            add 1 to {lc.stats.skyblockTraffic}
+            set {lc.stats.isNewPlayer.%uuid of arg-1%} to false
+
+command /traffic_creative <offlineplayer>:
+    executable by: console
+    trigger:
+        if {lc.stats.isNewPlayer.%uuid of arg-1%} is true:
+            add 1 to {lc.stats.creativeTraffic}
+            set {lc.stats.isNewPlayer.%uuid of arg-1%} to false
+
+on quit:
+    if {lc.stats.isNewPlayer.%uuid of player%} is true:
+        set {lc.stats.isNewPlayer.%uuid of player%} to false
+
+command /traffic:
+    permission: minecraft.op
+    trigger:
+        send "&e&lLootCraftMC Total Traffic" to player
+        send "&6&l> &aLOBBY - %{lc.stats.lobbyTraffic}%" to player
+        set {lc.stats.totaljoined} to {lc.stats.redTraffic} + {lc.stats.blueTraffic} + {lc.stats.blackTraffic} + {lc.stats.gamesTraffic} + {lc.stats.skyblockTraffic} + {lc.stats.creativeTraffic}
+        send "&6&l>> &aNew Players That Connected To Another Server: %{lc.stats.totaljoined}%" to player
+        send "&7" to player
+        send "&6&l> &cRED - %{lc.stats.redTraffic}%" to player
+        send "&6&l> &bBLUE - %{lc.stats.blueTraffic}%" to player
+        send "&6&l> &8BLACK - %{lc.stats.blackTraffic}%" to player
+        send "&6&l> &eGAMES - %{lc.stats.gamesTraffic}%" to player
+        send "&6&l> &7SKYBLOCK - %{lc.stats.skyblockTraffic}%" to player
+        send "&6&l> &dCREATIVE - %{lc.stats.creativeTraffic}%" to player

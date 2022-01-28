@@ -1,0 +1,63 @@
+on first join:
+        wait 5 ticks
+        set {PlayerFirstTimeJoining.%player's uuid%} to true
+        teleport player to location(378, 112, 496, world "Hub")
+        send "&a&lWelcome, %player%!" to player
+        send "Before you start playing, we'd like you to complete a short" to  player
+        send "tutorial quest. This is the first and only required" to player
+        send "quest on Sourbloc. All you have to do is talk to the two" to player
+        send "NPCs on this island. As you walk, there is information" to player
+        send "about the server for you to take a quick look at." to player
+        send "&lEnjoy!" to player
+
+command /firstjoinspawn:
+    permission: group.admin
+    trigger:
+        teleport player to location(378, 112, 496, world "Hub")
+        send "&a&lWelcome, %player%!" to player
+        send "Before you start playing, we'd like you to complete a short" to  player
+        send "tutorial quest. This is the first and only required" to player
+        send "quest on Sourbloc. All you have to do is talk to the two" to player
+        send "NPCs on this island. As you walk, there is information" to player
+        send "about the server for you to take a quick look at." to player
+        send "&lEnjoy!" to player
+
+command /closespawn:
+    trigger:
+        if {PlayerFirstTimeJoining.%player's uuid%} is true:
+            set {closespawn} to location(166, 85, 276, world "Hub")
+            set yaw of {closespawn} to 93.45
+            set pitch of {closespawn} to 4.5
+            teleport player to {closespawn}
+            send "&aYou can head right through this portal to get to wilderness." to player
+
+command /setspawn:
+    permission: group.admin
+    permission message: &aUhh... why are you trying to change spawn? Maybe don't do that.
+    trigger:
+        set {global.survival.spawn} to player's position
+        send "&aSpawn has been set." to player
+
+command /spawn:
+    trigger:
+        send "&aYou will be teleported to &eSourbloc spawn &ain five seconds." to player
+        set {_location} to location of block below player
+        set {_health} to health of player
+        wait 4 seconds
+        set {_movecheck} to location of block below player
+        set {_healthcheck} to health of player
+        if {_movecheck} = {_location}:
+            if {_healthcheck} = {_health}:
+                teleport player to {global.survival.spawn}
+                send "&aYou are now back in &eSourbloc spawn&a!" to player
+            if {_healthcheck} does not match {_health}:
+                send "&aLooks like you're too sick to travel!" to player
+        if {_movecheck} does not match {_location}:
+            send "&aSorry, we can't teleport you while you're moving!" to player
+        
+
+on respawn:
+    teleport player to {global.survival.spawn}
+    send "&aSpawn is kind of like heaven, when you think about it." to player
+    send "&aOr hell, your pick." to player
+

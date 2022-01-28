@@ -1,0 +1,17 @@
+command /worlds:
+    trigger:
+        wait 3 ticks
+        open chest with 1 row named "&6&lL&e&lO&6&lO&e&lT&6&lC&e&lR&6&lA&e&lF&6&lT &7>> &eChoose A World" to player
+
+        set {_aapslot} to 0
+        loop 9 times:
+            format slot {_aapslot} of player with gray stained glass pane named "&6" to be unstealable
+            add 1 to {_aapslot}
+
+        format slot 0 of player with compass named "&aLobby" to be unstealable
+        format slot 1 of player with red stained glass named "&cRed: Survival Server" with lore "&aKeep Inventory: &c&lOFF", "&aGriefing & PvP: &cALLOWED", "&aClaims Expire After 2 Months", "&a&o100 Claim Blocks per Hour" to close then run [execute player command "/red"]
+        format slot 2 of player with blue stained glass named "&bBlue: Safe Survival Server" with lore "&aKeep Inventory: &a&lON", "&aGriefing/Stealing: &cNOT ALLOWED", "&aClaims Never Expire", "&a&o200 Claim Blocks per Hour" to close then run [execute player command "/blue"]
+        format slot 3 of player with black stained glass named "&7Black: Purgatory Server" with lore "&4Banned Players Are Allowed Here", "&7Completely Vanilla, Hacks: &4Allowed" to close then run [execute player command "/black"]
+        format slot 4 of player with golden sword named "&eYellow: Games Server" with lore "&c&lTeam&9&lAttack", "&2&lZombies", "&d&lHide and Seek", "&e&lDay Trader", "&b&lCOMING SOON: DRIFT" to close then run [execute player command "/black"]
+        format slot 5 of player with feather named "&fWhite: Skyblock Server" with lore "&f&lIN DEVELOPMENT" to close then run [execute player command "/skyblock"]
+        format slot 6 of player with pink dye named "&dPink: Creative Server" with lore "&d&lClaim a Plot with /plot auto", "&dRequires Drifter Rank" to close then run [execute player command "/skyblock"]
